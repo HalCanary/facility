@@ -10,6 +10,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -171,6 +172,9 @@ func (info EbookInfo) Write(dst io.Writer) error {
 	}
 	for i, chapter := range info.Chapters {
 		info.Chapters[i].Content = Cleanup(chapter.Content)
+		if chUrl, _ := url.Parse(chapter.Url); chUrl != nil {
+			info.Chapters[i].Content = ResolveLinks(info.Chapters[i].Content, chUrl)
+		}
 	}
 
 	zw := zipper.Make(dst)

@@ -373,6 +373,5 @@ func TestEmail4(t *testing.T) {
 	}
 	var buffer bytes.Buffer
 	m.Make(&buffer)
-	result := buffer.String()
 	expect.Equal(t, buffer.String(), icsExpected)
 }

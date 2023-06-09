@@ -4,6 +4,7 @@ package ebook
 // Use of this program is governed by the file LICENSE.
 
 import (
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -15,7 +16,6 @@ type Node = dom.Node
 // Clean up a HTML fragment.
 func Cleanup(node *Node) *Node {
 	node = cleanupStyle(node)
-	cleanupLinks(node)
 	cleanupTables(node)
 	cleanupCenter(node)
 	cleanupDoubled(node)
@@ -132,17 +132,26 @@ func cleanupTables(node *Node) {
 	}
 }
 
-func cleanupLinks(node *Node) {
+func resolve(oldUrl string, ref *url.URL) string {
+	if u, _ := url.Parse(oldUrl); u != nil {
+		return ref.ResolveReference(u).String()
+	}
+	return oldUrl
+}
+
+func ResolveLinks(node *Node, ref *url.URL) *Node {
 	if node != nil && node.Type == dom.ElementNode {
-		if i := getNodeAttributeIndex(node, "href"); i >= 0 {
-			if strings.HasPrefix(node.Attr[i].Val, "/") {
-				node.Attr = append(node.Attr[:i], node.Attr[i+1:]...)
-			}
+		if attr := getNodeAttribute(node, "href"); attr != nil {
+			attr.Val = resolve(attr.Val, ref)
+		}
+		if attr := getNodeAttribute(node, "src"); attr != nil {
+			attr.Val = resolve(attr.Val, ref)
 		}
 		for c := node.FirstChild; c != nil; c = c.NextSibling {
-			cleanupLinks(c)
+			ResolveLinks(c, ref)
 		}
 	}
+	return node
 }
 
 func cleanupStyle(node *Node) *Node {
@@ -228,6 +237,17 @@ func getNodeAttributeIndex(node *Node, key string) int {
 		}
 	}
 	return -1
+}
+
+func getNodeAttribute(node *Node, key string) *dom.Attribute {
+	if node != nil {
+		for idx, attr := range node.Attr {
+			if attr.Namespace == "" && attr.Key == key {
+				return &node.Attr[idx]
+			}
+		}
+	}
+	return nil
 }
 
 func isWhitespaceOnly(node *Node) bool {
