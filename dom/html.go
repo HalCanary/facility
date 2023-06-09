@@ -265,35 +265,70 @@ func GetAttribute(node *Node, key string) string {
 	return ""
 }
 
-func extractTextImpl(root *Node, accumulator *strings.Builder) {
-	if root != nil {
-		if root.Type == html.TextNode {
-			accumulator.WriteString(whitespaceRegexp.ReplaceAllString(root.Data, " "))
-			return
-		}
-		if root.Type == html.ElementNode {
-			switch root.Data {
+// Extract and combine all Text Nodes under given node.
+func ExtractText(root *Node) string {
+	var result strings.Builder
+	if root == nil {
+		return result.String()
+	}
+	node := root
+	for {
+		if node.Type == html.TextNode {
+			result.WriteString(whitespaceRegexp.ReplaceAllString(node.Data, " "))
+		} else if node.Type == html.ElementNode {
+			switch node.Data {
 			case "br":
-				accumulator.WriteString("\n")
+				result.WriteString("\n")
 			case "hr":
-				accumulator.WriteString("\n* * *\n")
+				result.WriteString("\n* * *\n")
 			case "p":
-				accumulator.WriteString("\n\n")
+				result.WriteString("\n\n")
 			case "img":
-				accumulator.WriteString(GetAttribute(root, "alt"))
+				result.WriteString(GetAttribute(node, "alt"))
 			}
 		}
-		for child := root.FirstChild; child != nil; child = child.NextSibling {
-			extractTextImpl(child, accumulator)
+		if node.FirstChild != nil {
+			node = node.FirstChild
+			continue
+		}
+		for {
+			if node == root || node == nil {
+				return result.String()
+			}
+			if node.NextSibling != nil {
+				node = node.NextSibling
+				break
+			}
+			node = node.Parent
 		}
 	}
 }
 
-// Extract and combine all Text Nodes under given node.
-func ExtractText(root *Node) string {
-	var b strings.Builder
-	extractTextImpl(root, &b)
-	return b.String()
+func TextBytes(root *Node) int {
+	var result int = 0
+	if root == nil {
+		return result
+	}
+	node := root
+	for {
+		if node.Type == html.TextNode {
+			result += len(root.Data)
+		}
+		if node.FirstChild != nil {
+			node = node.FirstChild
+			continue
+		}
+		for {
+			if node == root || node == nil {
+				return result
+			}
+			if node.NextSibling != nil {
+				node = node.NextSibling
+				break
+			}
+			node = node.Parent
+		}
+	}
 }
 
 // Remove a node from its parent.

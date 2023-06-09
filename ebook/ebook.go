@@ -156,6 +156,23 @@ func (info EbookInfo) WriteHtml(dst io.Writer) error {
 	return dom.RenderHTML(htmlNode, dst)
 }
 
+func (info EbookInfo) Print(dst io.Writer) {
+	fmt.Fprintf(dst, "Authors:  %q\n", info.Authors)
+	fmt.Fprintf(dst, "Comments: %q\n", info.Comments)
+	fmt.Fprintf(dst, "Title:    %q\n", info.Title)
+	fmt.Fprintf(dst, "Source:   %q\n", info.Source)
+	fmt.Fprintf(dst, "Language: %q\n", info.Language)
+	fmt.Fprintf(dst, "Cover:    %d bytes\n", len(info.Cover))
+	fmt.Fprintf(dst, "Modified: %s\n", info.Modified.Format(time.RFC3339))
+	fmt.Fprintf(dst, "Chapters: %d\n", len(info.Chapters))
+	for _, ch := range info.Chapters {
+		fmt.Fprintf(dst, "* Title: %q\n", ch.Title)
+		fmt.Fprintf(dst, "  Url:   %q\n", ch.Url)
+		fmt.Fprintf(dst, "  Text:  %d bytes\n", dom.TextBytes(ch.Content))
+		fmt.Fprintf(dst, "  Mod:   %s\n", ch.Modified.Format(time.RFC3339))
+	}
+}
+
 // Write the ebook as an Epub.
 func (info EbookInfo) Write(dst io.Writer) error {
 	var (
