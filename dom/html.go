@@ -34,6 +34,11 @@ func Parse(source io.Reader) (*Node, error) {
 	return html.Parse(source)
 }
 
+// Wrapper for html.ParseFragment.
+func ParseFragment(source io.Reader, context *Node) ([]*Node, error) {
+	return html.ParseFragment(source, context)
+}
+
 var dashesRegexp = regexp.MustCompile("---*")
 
 // Return a HTML comment with the given data.
