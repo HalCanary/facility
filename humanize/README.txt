@@ -6,5 +6,5 @@ FUNCTIONS
 
 func Humanize(v int64) string
     Humanize converts a byte size to a human readable number, for example:
-    10240 becomes "10 KB. Everything is rounded down."
+    10240 becomes "10 KB. Everything is rounded up to nearest integer."
 

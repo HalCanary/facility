@@ -57,7 +57,23 @@ type Email struct {
 	Headers     map[string]string // Optional extra headers.
 }
 
-// Read email secrets from the given file.
+// Read email secrets from the given JSON file.  It might look something like
+// this:
+//
+//	{
+//	    "SmtpHost": "",
+//	    "SmtpUser": "",
+//	    "SmtpPass": "",
+//	    "FromAddr": "Foo Bar <foobar@example.com>",
+//	    "From": {
+//	        "Name": "Foo Bar",
+//	        "Address": "foobar@example.com"
+//	    },
+//	    "Headers": {
+//	        "X-PGP-Key": "",
+//	        "X-PGP-KeyID": ""
+//	    }
+//	}
 func GetSecrets(path string) (EmailSecrets, error) {
 	var v EmailSecrets
 	b, err := os.ReadFile(path)

@@ -30,6 +30,8 @@ func RenderXHTMLDoc(root *Node, w io.Writer) error
     Generates XHTML1 doc.
 
 func TextBytes(root *Node) int
+    Return the approximate number of bytes that `ExtractText` would return.
+
 
 TYPES
 

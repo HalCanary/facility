@@ -27,7 +27,7 @@ var (
 	cacheDir     string
 )
 
-// Fetch the content of a URL, using a cache if possible and if force is fakse.
+// Fetch the content of a URL, using a cache if possible and if force is false.
 func GetUrl(url, ref string, force bool) (io.ReadCloser, error) {
 	cacheDirOnce.Do(func() {
 		cache, err := os.UserCacheDir()

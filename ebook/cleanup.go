@@ -139,6 +139,7 @@ func resolve(oldUrl string, ref *url.URL) string {
 	return oldUrl
 }
 
+// Resolve all links in the tree, relative to `ref`.
 func ResolveLinks(node *Node, ref *url.URL) *Node {
 	if node != nil && node.Type == dom.ElementNode {
 		if attr := getNodeAttribute(node, "href"); attr != nil {

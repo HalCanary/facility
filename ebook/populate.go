@@ -18,6 +18,7 @@ func getTextByTagAndAttrib(dst *string, root *dom.Node, tag, key, value string) 
 	}
 }
 
+// Populate `info` based on common patterns.
 func PopulateInfo(info *EbookInfo, doc *dom.Node) {
 	if info == nil || doc == nil {
 		return

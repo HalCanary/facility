@@ -50,5 +50,21 @@ type EmailSecrets struct {
     Headers are additional headers to be added to outgoing email.
 
 func GetSecrets(path string) (EmailSecrets, error)
-    Read email secrets from the given file.
+    Read email secrets from the given JSON file. It might look something like
+    this:
+
+        {
+            "SmtpHost": "",
+            "SmtpUser": "",
+            "SmtpPass": "",
+            "FromAddr": "Foo Bar <foobar@example.com>",
+            "From": {
+                "Name": "Foo Bar",
+                "Address": "foobar@example.com"
+            },
+            "Headers": {
+                "X-PGP-Key": "",
+                "X-PGP-KeyID": ""
+            }
+        }
 

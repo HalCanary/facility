@@ -18,6 +18,7 @@ import (
 	"github.com/HalCanary/facility/zipper"
 )
 
+// One Chapter of an Ebook.
 type Chapter struct {
 	Title    string
 	Url      string
@@ -94,6 +95,7 @@ func dataUrl(src []byte) string {
 		base64.StdEncoding.EncodeToString(src))
 }
 
+// Write the ebook as a single HTML file.
 func (info EbookInfo) WriteHtml(dst io.Writer) error {
 	body := dom.Elem("body", nl())
 	if len(info.Cover) > 0 {
@@ -156,6 +158,7 @@ func (info EbookInfo) WriteHtml(dst io.Writer) error {
 	return dom.RenderHTML(htmlNode, dst)
 }
 
+// Print information about the book.
 func (info EbookInfo) Print(dst io.Writer) {
 	fmt.Fprintf(dst, "Authors:  %q\n", info.Authors)
 	fmt.Fprintf(dst, "Comments: %q\n", info.Comments)

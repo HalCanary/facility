@@ -22,6 +22,7 @@ func copyFile(src, dst string) error {
 	return err
 }
 
+// Convert a html file to an epub, using `ebook-convert`.
 func ConvertToEbook(src, dst string, arguments ...string) error {
 	tmpDir, err := os.MkdirTemp("", "")
 	if err != nil {

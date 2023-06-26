@@ -309,6 +309,7 @@ func ExtractText(root *Node) string {
 	}
 }
 
+// Return the approximate number of bytes that `ExtractText` would return.
 func TextBytes(root *Node) int {
 	var result int = 0
 	if root == nil {

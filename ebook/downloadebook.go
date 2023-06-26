@@ -8,6 +8,9 @@ import (
 	"sync"
 )
 
+// A function that generates an ebook from a url.
+// @param url - the URL of the title page of the book.
+// @param doPopulate - if true, download and populate the entire EbookInfo data structure, not just its metadata.
 type EbookGeneratorFunction func(url string, doPopulate bool) (EbookInfo, error)
 
 // Returned by a EbookGeneratorFunction when the URL can not be handled.
