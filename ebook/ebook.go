@@ -204,7 +204,7 @@ func (info EbookInfo) Write(dst io.Writer) error {
 	if !modTime.IsZero() {
 		modTime = modTime.UTC()
 	}
-	if w := zw.CreateStore("mimetype", modTime); w != nil {
+	if w := zw.CreateStore("mimetype", time.Time{}); w != nil {
 		_, zw.Error = w.Write([]byte("application/epub+zip"))
 	}
 	if w := zw.CreateDeflate("META-INF/container.xml", modTime); w != nil {
