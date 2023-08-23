@@ -15,7 +15,7 @@ push_up:
 README.md: $(FILES) Makefile
 	printf '# FACILITY\n\nUseful Go Packages\n\nCopyright (c) 2022 Hal Canary\n\n' > $@
 	for pkg in $(PKGS); do \
-		go doc -all ./$$pkg > $$pkg/README.txt; \
+		printf '<https://pkg.go.dev/github.com/HalCanary/facility/%s>' "$$pkg" > "$$pkg"/README.md; \
 		printf '\n[%s](%s)\n' $$pkg ./$$pkg/ >> $@; \
 	done
 .PHONY: test fmt update_deps new_version push_up
