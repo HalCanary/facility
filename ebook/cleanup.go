@@ -214,6 +214,13 @@ func cleanupStyle(node *Node) *Node {
 					node.Attr = append(node.Attr, dom.Attribute{Key: "src", Val: "data:null;,"})
 				}
 			}
+			if node.Data == "script" {
+				dom.Remove(node)
+				return nil
+			}
+			if node.Data == "noscript" {
+				node.Data = "span"
+			}
 		}
 	}
 	return node
