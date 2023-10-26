@@ -155,7 +155,11 @@ func (info EbookInfo) WriteHtml(dst io.Writer) error {
 		),
 		nl(), body, nl(),
 	)
-	return dom.RenderHTML(htmlNode, dst)
+	err := dom.RenderHTML(htmlNode, dst)
+	for _, chapter := range info.Chapters {
+		dom.Remove(chapter.Content)
+	}
+	return err
 }
 
 // Print information about the book.
