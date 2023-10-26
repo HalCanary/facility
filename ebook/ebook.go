@@ -149,6 +149,10 @@ func (info EbookInfo) WriteHtml(dst io.Writer) error {
 	if len(info.Comments) > 0 {
 		description = description + "\n\n" + info.Comments
 	}
+	var dcDateModified *dom.Node
+	if !info.Modified.IsZero() {
+		dcDateModified = meta("DC.date.modified", info.Modified.Format("2006-01-02"))
+	}
 	htmlNode := dom.Element("html", dom.Attr{"lang": info.Language}, nl(),
 		dom.Elem("head", nl(),
 			dom.Element("meta", dom.Attr{"charset": "utf-8"}), nl(),
@@ -159,7 +163,7 @@ func (info EbookInfo) WriteHtml(dst io.Writer) error {
 			meta("DC.description", description), nl(),
 			meta("DC.source", info.Source), nl(),
 			meta("DC.language", info.Language), nl(),
-			meta("DC.date.modified", info.Modified.Format("2006-01-02")), nl(),
+			dcDateModified, nl(),
 			dom.Elem("style", dom.Text(bookStyle)), nl(),
 		),
 		nl(), body, nl(),
