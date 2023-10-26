@@ -95,6 +95,15 @@ func dataUrl(src []byte) string {
 		base64.StdEncoding.EncodeToString(src))
 }
 
+func (info *EbookInfo) Cleanup() {
+	for i, chapter := range info.Chapters {
+		info.Chapters[i].Content = Cleanup(chapter.Content)
+		if chUrl, _ := url.Parse(chapter.Url); chUrl != nil {
+			info.Chapters[i].Content = ResolveLinks(info.Chapters[i].Content, chUrl)
+		}
+	}
+}
+
 // Write the ebook as a single HTML file.
 func (info EbookInfo) WriteHtml(dst io.Writer) error {
 	body := dom.Elem("body", nl())
@@ -192,12 +201,6 @@ func (info EbookInfo) Write(dst io.Writer) error {
 		if err != nil {
 			log.Printf("Cover error: %v", err)
 			cover = nil
-		}
-	}
-	for i, chapter := range info.Chapters {
-		info.Chapters[i].Content = Cleanup(chapter.Content)
-		if chUrl, _ := url.Parse(chapter.Url); chUrl != nil {
-			info.Chapters[i].Content = ResolveLinks(info.Chapters[i].Content, chUrl)
 		}
 	}
 
