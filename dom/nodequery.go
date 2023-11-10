@@ -1,5 +1,7 @@
 package dom
 
+import "regexp"
+
 // Copyright 2022 Hal Canary
 // Use of this program is governed by the file LICENSE.
 
@@ -52,6 +54,59 @@ func findNodesByTagAndAttrib(root *Node, tag, key, value string, stopEarly bool)
 			} else {
 				for _, attr := range node.Attr {
 					if attr.Key == key && attr.Val == value {
+						result = append(result, node)
+						if stopEarly {
+							return result
+						}
+					}
+				}
+			}
+		}
+		if node.FirstChild != nil {
+			node = node.FirstChild
+			continue
+		}
+		for {
+			if node == root || node == nil {
+				return result
+			}
+			if node.NextSibling != nil {
+				node = node.NextSibling
+				break
+			}
+			node = node.Parent
+		}
+	}
+}
+
+// Return the first matching node.  If tag is "", match key="value".
+// If key is "", match on tag.
+func FindNodeByTagAndAttribRe(root *Node, tag, key string, value *regexp.Regexp) *Node {
+	result := findNodesByTagAndAttribRe(root, tag, key, value, true)
+	if len(result) == 0 {
+		return nil
+	}
+	return result[0]
+}
+
+func findNodesByTagAndAttribRe(root *Node, tag, key string, value *regexp.Regexp, stopEarly bool) []*Node {
+	var result []*Node
+	// I unrolled a recursive function to use no recursion, or heap allocation,
+	// only loops.  This is allowed by the existance of Parent pointer.
+	if root == nil {
+		return result
+	}
+	node := root
+	for {
+		if node.Type == ElementNode && (tag == "" || node.Data == tag) {
+			if key == "" {
+				result = append(result, node)
+				if stopEarly {
+					return result
+				}
+			} else {
+				for _, attr := range node.Attr {
+					if attr.Key == key && value.MatchString(attr.Val) {
 						result = append(result, node)
 						if stopEarly {
 							return result
