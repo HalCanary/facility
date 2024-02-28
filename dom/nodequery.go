@@ -54,6 +54,10 @@ func FindNodeByTagAndAttribRe(root *Node, tag, key string, value *regexp.Regexp)
 	return result[0]
 }
 
+func FindNodesByTagAndAttribRe(root *Node, tag, key string, value *regexp.Regexp) []*Node {
+	return findNodesByTagAndAttribRe(root, tag, key, value, false)
+}
+
 func findNodesByTagAndAttribRe(root *Node, tag, key string, value *regexp.Regexp, stopEarly bool) []*Node {
 	var result []*Node
 	// I unrolled a recursive function to use no recursion, or heap allocation,
